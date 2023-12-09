@@ -51,6 +51,14 @@ button.cell.ship {
   cursor: default;
 }
 
+button.cell.hit {
+  background-color: #4caf50; /* green */
+}
+
+button.cell.miss {
+  background-color: #808080; /* gray */
+}
+
 .button-group {
   display: flex;
   margin-bottom: 20px;
