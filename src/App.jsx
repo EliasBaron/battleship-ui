@@ -171,6 +171,18 @@ function App() {
       submarino: false,
       lancha: false,
     });
+    setRemainingPlayerShips({
+      portaaviones: initialShipData.portaaviones.size,
+      crucero: initialShipData.crucero.size,
+      submarino: initialShipData.submarino.size,
+      lancha: initialShipData.lancha.size,
+    });
+    setRemainingComputerShips({
+      portaaviones: initialShipData.portaaviones.size,
+      crucero: initialShipData.crucero.size,
+      submarino: initialShipData.submarino.size,
+      lancha: initialShipData.lancha.size,
+    });
   };
 
   const [remainingPlayerShips, setRemainingPlayerShips] = useState({
@@ -208,7 +220,8 @@ function App() {
           }
         }}
       >
-        Change orientation (Current: {selectedShip ? shipData[selectedShip].orientation : "N/A"})
+        Change orientation (Current:{" "}
+        {selectedShip ? shipData[selectedShip].orientation : "N/A"})
       </button>
 
       <div className="button-group">
@@ -225,25 +238,25 @@ function App() {
           </button>
         ))}
       </div>
+
       <div className="board">
-            {board.map((row, i) => (
-              <div key={i} className="row">
-                {row.map((cell, j) => (
-                  <button
-                    key={j}
-                    className={`cell ${cell === "S" ? "ship" : ""}`}
-                    onClick={() => handleClick(i, j)}
-                  ></button>
-                ))}
-              </div>
+        {board.map((row, i) => (
+          <div key={i} className="row">
+            {row.map((cell, j) => (
+              <button
+                key={j}
+                className={`cell ${cell === "S" ? "ship" : ""}`}
+                onClick={() => handleClick(i, j)}
+                disabled={cell === "S"}
+              ></button>
             ))}
           </div>
+        ))}
+      </div>
 
       {Object.values(placedShips).every((value) => value) && (
         <>
           <p>All ships have been placed!</p>
-
-          
 
           <div className="ship-counters">
             <p>Remaining Player Ships:</p>
@@ -274,15 +287,24 @@ function App() {
                   <button
                     key={j}
                     className={`cell ${
-                      computerHits[i][j] ? "hit" : computerMisses[i][j] ? "miss" : ""
+                      computerHits[i][j]
+                        ? "hit"
+                        : computerMisses[i][j]
+                        ? "miss"
+                        : ""
                     }`}
                     onClick={() => handleComputerClick(i, j)}
+                    disabled={computerHits[i][j] || computerMisses[i][j]}
                   ></button>
                 ))}
               </div>
             ))}
           </div>
         </>
+      )}
+
+      {Object.values(remainingComputerShips).every((value) => value === 0) && (
+        <p>YOU WIN!</p>
       )}
     </div>
   );
