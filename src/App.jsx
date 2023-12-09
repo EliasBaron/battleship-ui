@@ -1,83 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-
-function Cell({ onClick, value }) {
-  return (
-    <button className={`cell ${value}`} onClick={onClick} />
-  );
-}
-
-function Board() {
-  const [grid, setGrid] = useState(Array(10).fill(Array(10).fill('water')));
-  const [guesses, setGuesses] = useState(Array(10).fill(Array(10).fill(null)));
-  const [ships, setShips] = useState([
-    { length: 5, orientation: 'horizontal', coordinates: [0, 0] },
-    // Add more ships as needed
-  ]);
-  const [gameOver, setGameOver] = useState(false);
-  const [remainingShips, setRemainingShips] = useState(0);
-  useEffect(() => {
-    placeShips();
-  }, []);
-
-  useEffect(() => {
-    setRemainingShips(ships.length);
-  }, [ships]);
-
-  const placeShips = () => {
-    let newGrid = grid.slice();
-    ships.forEach(ship => {
-      let x = ship.coordinates[0];
-      let y = ship.coordinates[1];
-      for (let i = 0; i < ship.length; i++) {
-        if (ship.orientation === 'horizontal') {
-          newGrid[x][y + i] = 'ship';
-        } else {
-          newGrid[x + i][y] = 'ship';
-        }
-      }
-    });
-    setGrid(newGrid);
-    setRemainingShips(ships.length); // Set remainingShips here
-  };
-
-  const handleClick = (i, j) => {
-    const newGuesses = guesses.slice();
-    if (grid[i][j] === 'ship' && newGuesses[i][j] !== 'hit') {
-      setRemainingShips(remainingShips - 1);
-      newGuesses[i][j] = 'hit';
-    } else {
-      newGuesses[i][j] = 'miss';
-    }
-    setGuesses(newGuesses);
-    checkGameOver(newGuesses);
-  };
-
-  const checkGameOver = (guesses) => {
-    if (guesses.flat().filter(x => x === 'hit').length === ships.reduce((acc, ship) => acc + ship.length, 0)) {
-      setGameOver(true);
-    }
-  };
-
-  return (
-    <div className="board">
-      {guesses.map((row, i) => (
-        <div key={i} className="row">
-          {row.map((cell, j) => (
-            <Cell key={j} value={cell} onClick={() => handleClick(i, j)} />
-          ))}
-        </div>
-      ))}
-      {gameOver && <div>Game Over</div>}
-      <div>Remaining Ships: {remainingShips}</div>
-    </div>
-  );
-}
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
+  const initialBoard = Array.from({ length: 10 }, () => Array(10).fill(null));
+  const initialShips = { portaaviones: 5, crucero: 4, submarino: 3, lancha: 2 };
+  const initialPlacedShips = {
+    portaaviones: false,
+    crucero: false,
+    submarino: false,
+    lancha: false,
+  };
+
+  const [board, setBoard] = useState(initialBoard);
+  const [ships, setShips] = useState(initialShips);
+  const [placedShips, setPlacedShips] = useState(initialPlacedShips);
+  const [selectedShip, setSelectedShip] = useState(null);
+  const [orientation, setOrientation] = useState("horizontal");
+
+  const handleClick = (i, j) => {
+    if (selectedShip && !placedShips[selectedShip]) {
+      let newBoard = [...board];
+      let canPlaceShip = true;
+
+      for (let k = 0; k < ships[selectedShip]; k++) {
+        if (orientation === "horizontal") {
+          if (j + k >= 10 || newBoard[i][j + k] === "S") {
+            canPlaceShip = false;
+            break;
+          }
+        } else {
+          if (i + k >= 10 || newBoard[i + k][j] === "S") {
+            canPlaceShip = false;
+            break;
+          }
+        }
+      }
+
+      if (canPlaceShip) {
+        for (let k = 0; k < ships[selectedShip]; k++) {
+          if (orientation === "horizontal") {
+            newBoard[i][j + k] = "S";
+          } else {
+            newBoard[i + k][j] = "S";
+          }
+        }
+        setBoard(newBoard);
+        setPlacedShips({ ...placedShips, [selectedShip]: true });
+        setSelectedShip(null);
+      }
+    }
+  };
+
+  const resetGame = () => {
+    setBoard([...initialBoard]);
+    setShips({ ...initialShips });
+    setPlacedShips({ ...initialPlacedShips });
+    setSelectedShip(null);
+    setOrientation("horizontal");
+  };
+
   return (
     <div className="App">
-      <Board />
+      <button onClick={resetGame}>Reset</button>
+      <button
+        onClick={() =>
+          setOrientation(
+            orientation === "horizontal" ? "vertical" : "horizontal"
+          )
+        }
+      >
+        Change orientation (Current: {orientation})
+      </button>
+
+      {Object.keys(ships).map((ship) => (
+        <button
+          key={ship}
+          className={`ship ${selectedShip === ship ? "selected" : ""} ${
+            placedShips[ship] ? "placed" : ""
+          }`}
+          disabled={placedShips[ship]}
+          onClick={() => setSelectedShip(ship)}
+        >
+          {ship}
+        </button>
+      ))}
+
+      {Object.values(placedShips).every((value) => value) && (
+        <p>All ships have been placed!</p>
+      )}
+
+      <div className="board">
+        {board.map((row, i) => (
+          <div key={i} className="row">
+            {row.map((cell, j) => (
+              <button
+                key={j}
+                className={`cell ${cell === "S" ? "ship" : ""}`}
+                onClick={() => handleClick(i, j)}
+              ></button>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
