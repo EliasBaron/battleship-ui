@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const BOARD_SIZE = 10;
-
 function App() {
-  const initialBoard = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
+  const BOARD_SIZE = 10;
+
+  const initialBoard = Array.from({ length: BOARD_SIZE }, () =>
+    Array(BOARD_SIZE).fill(null)
+  );
 
   const initialShipData = {
     portaaviones: { size: 5, orientation: "horizontal" },
@@ -24,13 +26,13 @@ function App() {
   const [selectedShip, setSelectedShip] = useState(null);
 
   const [computerBoard, setComputerBoard] = useState(initialBoard);
-  const [userHits, setUserHits] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-  const [userMisses, setUserMisses] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-  
-  const [computerHits, setComputerHits] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-  const [computerMisses, setComputerMisses] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-  const [usedCells, setUsedCells] = useState(new Set());
- 
+  const [userHits, setUserHits] = useState(generateEmptyBoard());
+  const [userMisses, setUserMisses] = useState(generateEmptyBoard());
+
+  const [computerHits, setComputerHits] = useState(generateEmptyBoard());
+  const [computerMisses, setComputerMisses] = useState(generateEmptyBoard());
+  const [availableCells, setAvailableCells] = useState(generateAvailableCells());
+
   const [computerShips, setComputerShips] = useState({
     portaaviones: false,
     crucero: false,
@@ -38,19 +40,13 @@ function App() {
     lancha: false,
   });
 
-  const [remainingPlayerShips, setRemainingPlayerShips] = useState({
-    portaaviones: initialShipData.portaaviones.size,
-    crucero: initialShipData.crucero.size,
-    submarino: initialShipData.submarino.size,
-    lancha: initialShipData.lancha.size,
-  });
+  const [remainingPlayerShips, setRemainingPlayerShips] = useState(
+    generateRemainingShips(initialShipData)
+  );
 
-  const [remainingComputerShips, setRemainingComputerShips] = useState({
-    portaaviones: initialShipData.portaaviones.size,
-    crucero: initialShipData.crucero.size,
-    submarino: initialShipData.submarino.size,
-    lancha: initialShipData.lancha.size,
-  });
+  const [remainingComputerShips, setRemainingComputerShips] = useState(
+    generateRemainingShips(initialShipData)
+  );
 
   const [turn, setTurn] = useState("player");
 
@@ -60,8 +56,37 @@ function App() {
     }
   }, [placedShips]);
 
-  const generateComputerBoard = () => {
-    const newComputerBoard = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
+  useEffect(() => {
+    if (turn === "computer") {
+      handleComputerClick();
+    }
+  }, [turn, computerHits]);
+
+  function generateEmptyBoard() {
+    return Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false));
+  }
+
+  function generateAvailableCells() {
+    const cells = [];
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        cells.push({ i, j });
+      }
+    }
+    return cells;
+  }
+
+  function generateRemainingShips(shipData) {
+    return Object.keys(shipData).reduce((acc, ship) => {
+      acc[ship] = shipData[ship].size;
+      return acc;
+    }, {});
+  }
+
+  function generateComputerBoard() {
+    const newComputerBoard = Array.from({ length: BOARD_SIZE }, () =>
+      Array(BOARD_SIZE).fill(null)
+    );
 
     const computerShipData = {
       portaaviones: { size: 5, orientation: "horizontal" },
@@ -71,24 +96,7 @@ function App() {
     };
 
     for (const ship in computerShipData) {
-      const { size, orientation } = computerShipData[ship];
-      let placed = false;
-
-      while (!placed) {
-        const i = Math.floor(Math.random() * BOARD_SIZE);
-        const j = Math.floor(Math.random() * BOARD_SIZE);
-
-        if (canPlaceShip(newComputerBoard, i, j, size, orientation)) {
-          for (let k = 0; k < size; k++) {
-            if (orientation === "horizontal") {
-              newComputerBoard[i][j + k] = ship;
-            } else {
-              newComputerBoard[i + k][j] = ship;
-            }
-          }
-          placed = true;
-        }
-      }
+      placeComputerShip(newComputerBoard, ship, computerShipData[ship]);
     }
 
     setComputerBoard(newComputerBoard);
@@ -98,9 +106,29 @@ function App() {
       submarino: true,
       lancha: true,
     });
-  };
+  }
 
-  const canPlaceShip = (board, i, j, size, orientation) => {
+  function placeComputerShip(board, ship, { size, orientation }) {
+    let placed = false;
+
+    while (!placed) {
+      const i = Math.floor(Math.random() * BOARD_SIZE);
+      const j = Math.floor(Math.random() * BOARD_SIZE);
+
+      if (canPlaceShip(board, i, j, size, orientation)) {
+        for (let k = 0; k < size; k++) {
+          if (orientation === "horizontal") {
+            board[i][j + k] = ship;
+          } else {
+            board[i + k][j] = ship;
+          }
+        }
+        placed = true;
+      }
+    }
+  }
+
+  function canPlaceShip(board, i, j, size, orientation) {
     for (let k = 0; k < size; k++) {
       if (orientation === "horizontal") {
         if (j + k >= BOARD_SIZE || board[i][j + k] !== null) {
@@ -113,9 +141,9 @@ function App() {
       }
     }
     return true;
-  };
+  }
 
-  const handleClick = (i, j) => {
+  function handleClick(i, j) {
     if (selectedShip && !placedShips[selectedShip]) {
       let newBoard = [...userBoard];
       let canPlaceShip = true;
@@ -152,74 +180,80 @@ function App() {
         setRemainingPlayerShips(remainingShips);
       }
     }
-  };
+  }
 
-  const handleUserClick = (i, j) => {
+  function handleUserClick(i, j) {
     if (computerBoard[i][j] !== null) {
-      const newHits = [...userHits];
-      newHits[i][j] = true;
+      const newHits = markHit(userHits, i, j);
       setUserHits(newHits);
 
       const ship = computerBoard[i][j];
-      const remainingShips = { ...remainingComputerShips };
-      remainingShips[ship] -= 1;
+      const remainingShips = decreaseRemainingShips(remainingComputerShips, ship);
       setRemainingComputerShips(remainingShips);
     } else {
-      const newMisses = [...userMisses];
-      newMisses[i][j] = true;
+      const newMisses = markMiss(userMisses, i, j);
       setUserMisses(newMisses);
       setTurn("computer");
     }
-  };
+  }
+
+  function markHit(board, i, j) {
+    const newBoard = [...board];
+    newBoard[i][j] = true;
+    return newBoard;
+  }
+
+  function markMiss(board, i, j) {
+    const newBoard = [...board];
+    newBoard[i][j] = true;
+    return newBoard;
+  }
+
+  function decreaseRemainingShips(remainingShips, ship) {
+    const newRemainingShips = { ...remainingShips };
+    newRemainingShips[ship] -= 1;
+    return newRemainingShips;
+  }
 
   useEffect(() => {
-    if (turn === "computer") {
-      setTimeout(() => {
-        handleComputerClick();
-      }, 1000);
+    if (turn === "computer" && computerHits.flat().length < 17) {
+      handleComputerClick();
     }
   }, [turn, computerHits]);
 
-  const handleComputerClick = () => {
-    let i, j;
-    let guessed = false;
-  
-    while (!guessed) {
-      i = Math.floor(Math.random() * BOARD_SIZE);
-      j = Math.floor(Math.random() * BOARD_SIZE);
-  
-      const cellKey = `${i}-${j}`;
-  
-      if (!usedCells.has(cellKey) && !userHits[i][j] && !userMisses[i][j]) {
-        guessed = true;
-        setUsedCells((prevUsedCells) => new Set(prevUsedCells).add(cellKey));
-      }
+  function handleComputerClick() {
+    if (availableCells.length === 0) {
+      console.log("No available cells. Game over?");
+      return;
     }
-  
+
+    // Choose a random cell from the available cells
+    const randomIndex = Math.floor(Math.random() * availableCells.length);
+    const { i, j } = availableCells[randomIndex];
+
+    // Mark the chosen cell as used
+    const updatedCells = availableCells.filter((cell) => cell.i !== i || cell.j !== j);
+    setAvailableCells(updatedCells);
+
     if (userBoard[i][j] === "S") {
-      const newHits = [...computerHits];
-      newHits[i][j] = true;
+      const newHits = markHit(computerHits, i, j);
       setComputerHits(newHits);
-  
-      const remainingShips = { ...remainingPlayerShips };
-      const ship = userBoard[i][j];
-      remainingShips[ship] -= 1;
+
+      const remainingShips = decreaseRemainingShips(remainingPlayerShips, userBoard[i][j]);
       setRemainingPlayerShips(remainingShips);
-  
-      const newBoard = [...userBoard];
-      newBoard[i][j] = "H";
+
+      const newBoard = markHit([...userBoard], i, j);
       setUserBoard(newBoard);
     } else {
-      const newMisses = [...computerMisses];
-      newMisses[i][j] = true;
+      const newMisses = markMiss(computerMisses, i, j);
       setComputerMisses(newMisses);
       setTurn("player");
     }
-  };
+  }
 
-  const resetGame = () => {
-    setUserBoard([...initialBoard]);
-    setShipData({ ...initialShipData });
+  function resetGame() {
+    setUserBoard(initialBoard);
+    setShipData(initialShipData);
     setPlacedShips({
       portaaviones: false,
       crucero: false,
@@ -227,28 +261,28 @@ function App() {
       lancha: false,
     });
     setSelectedShip(null);
-    setComputerBoard([...initialBoard]);
-    setUserHits(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-    setUserMisses(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
+
+    setComputerBoard(initialBoard);
+    setUserHits(generateEmptyBoard());
+    setUserMisses(generateEmptyBoard());
+
+    setComputerHits(generateEmptyBoard());
+    setComputerMisses(generateEmptyBoard());
+    setAvailableCells(generateAvailableCells());
+
     setComputerShips({
       portaaviones: false,
       crucero: false,
       submarino: false,
       lancha: false,
     });
-    setRemainingPlayerShips({
-      portaaviones: initialShipData.portaaviones.size,
-      crucero: initialShipData.crucero.size,
-      submarino: initialShipData.submarino.size,
-      lancha: initialShipData.lancha.size,
-    });
-    setRemainingComputerShips({
-      portaaviones: initialShipData.portaaviones.size,
-      crucero: initialShipData.crucero.size,
-      submarino: initialShipData.submarino.size,
-      lancha: initialShipData.lancha.size,
-    });
-  };
+
+    setRemainingPlayerShips(generateRemainingShips(initialShipData));
+
+    setRemainingComputerShips(generateRemainingShips(initialShipData));
+
+    setTurn("player");
+  }
 
   return (
     <div className="App">
@@ -296,9 +330,7 @@ function App() {
             {row.map((cell, j) => (
               <button
                 key={j}
-                className={`cell ${
-                  userBoard[i][j] === "S" ? "ship" : ""
-                } ${
+                className={`cell ${cell === "S" ? "ship" : ""} ${
                   computerHits[i][j]
                     ? "hit"
                     : computerMisses[i][j]
@@ -306,7 +338,7 @@ function App() {
                     : ""
                 }`}
                 onClick={() => handleClick(i, j)}
-                disabled={userBoard[i][j] === "S"}
+                disabled={cell === "S"}
               ></button>
             ))}
           </div>
@@ -315,50 +347,56 @@ function App() {
 
       {Object.values(placedShips).every((value) => value) && (
         <>
-          <p>All ships have been placed!</p>
+          {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
+            <p>YOU LOSE!</p>
+          ) : (
+            <>
+              <p>The war started!</p>
 
-          <div className="ship-counters">
-            <p>Remaining Player Ships:</p>
-            <ul>
-              {Object.keys(remainingPlayerShips).map((ship) => (
-                <li key={ship}>
-                  {ship}: {remainingPlayerShips[ship]}
-                </li>
-              ))}
-            </ul>
+              <div className="ship-counters">
+                <p>Remaining Player Ships:</p>
+                <ul>
+                  {Object.keys(remainingPlayerShips).map((ship) => (
+                    <li key={ship}>
+                      {ship}: {remainingPlayerShips[ship]}
+                    </li>
+                  ))}
+                </ul>
 
-            <p>Remaining Computer Ships:</p>
-            <ul>
-              {Object.keys(remainingComputerShips).map((ship) => (
-                <li key={ship}>
-                  {ship}: {remainingComputerShips[ship]}
-                </li>
-              ))}
-            </ul>
-          </div>
+                <p>Remaining Computer Ships:</p>
+                <ul>
+                  {Object.keys(remainingComputerShips).map((ship) => (
+                    <li key={ship}>
+                      {ship}: {remainingComputerShips[ship]}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-          <p>Computer's Board:</p>
+              <p>Computer's Board:</p>
 
-          <div className="board">
-            {computerBoard.map((row, i) => (
-              <div key={i} className="row">
-                {row.map((cell, j) => (
-                  <button
-                    key={j}
-                    className={`cell ${
-                      userHits[i][j]
-                        ? "hit"
-                        : userMisses[i][j]
-                        ? "miss"
-                        : ""
-                    }`}
-                    onClick={() => handleUserClick(i, j)}
-                    disabled={userHits[i][j] || userMisses[i][j]}
-                  ></button>
+              <div className="board">
+                {computerBoard.map((row, i) => (
+                  <div key={i} className="row">
+                    {row.map((cell, j) => (
+                      <button
+                        key={j}
+                        className={`cell ${
+                          userHits[i][j]
+                            ? "hit"
+                            : userMisses[i][j]
+                            ? "miss"
+                            : ""
+                        }`}
+                        onClick={() => handleUserClick(i, j)}
+                        disabled={userHits[i][j] || userMisses[i][j]}
+                      ></button>
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </>
       )}
 
@@ -368,6 +406,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
