@@ -29,7 +29,7 @@ function App() {
   
   const [computerHits, setComputerHits] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
   const [computerMisses, setComputerMisses] = useState(Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false)));
-
+  const [usedCells, setUsedCells] = useState(new Set());
  
   const [computerShips, setComputerShips] = useState({
     portaaviones: false,
@@ -188,8 +188,11 @@ function App() {
       i = Math.floor(Math.random() * BOARD_SIZE);
       j = Math.floor(Math.random() * BOARD_SIZE);
   
-      if (!userHits[i][j] && !userMisses[i][j]) {
+      const cellKey = `${i}-${j}`;
+  
+      if (!usedCells.has(cellKey) && !userHits[i][j] && !userMisses[i][j]) {
         guessed = true;
+        setUsedCells((prevUsedCells) => new Set(prevUsedCells).add(cellKey));
       }
     }
   
