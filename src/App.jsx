@@ -221,6 +221,12 @@ function App() {
     }
   }, [turn, computerHits]);
 
+  // useEffect(() => {
+
+  //     handleComputerClick();
+    
+  // }, [turn, computerHits]);
+
   function handleComputerClick() {
     if (availableCells.length === 0) {
       console.log("No available cells. Game over?");
@@ -402,6 +408,9 @@ function App() {
 
       {Object.values(remainingComputerShips).every((value) => value === 0) && (
         <p>YOU WIN!</p>
+      )}
+      {Object.values(remainingPlayerShips).every((value) => value === 0) && (
+        <p>YOU LOSE!</p>
       )}
     </div>
   );
