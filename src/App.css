@@ -47,16 +47,16 @@ button.cell {
 }
 
 button.cell.ship {
-  background-color: darkgreen !important;
+  background-color: darkgreen;
   cursor: default;
 }
 
 button.cell.hit {
-  background-color: #4caf50; /* green */
+  background-color: #a12019;
 }
 
 button.cell.miss {
-  background-color: #808080; /* gray */
+  background-color: #808080;
 }
 
 .button-group {
@@ -68,4 +68,6 @@ button.cell.miss {
   margin-right: 10px;
 }
 
-/* Add any additional styles or modifications here */
+.opacity {
+  opacity: 0.7;
+}

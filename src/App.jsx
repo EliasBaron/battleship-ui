@@ -58,7 +58,6 @@ function App() {
     }
   }, [placedShips]);
 
-
   function generateEmptyBoard() {
     return Array.from({ length: BOARD_SIZE }, () =>
       Array(BOARD_SIZE).fill(false)
@@ -167,7 +166,7 @@ function App() {
           if (orientation === "horizontal") {
             newBoard[i][j + k] = selectedShip;
           } else {
-            newBoard[i + k][j] = selectedShip; 
+            newBoard[i + k][j] = selectedShip;
           }
         }
         setUserBoard(newBoard);
@@ -406,7 +405,9 @@ function App() {
 
                   <p>Computer's Board:</p>
 
-                  <div className="board">
+                  <div
+                    className={`board ${turn === "computer" ? "opacity" : ""}`}
+                  >
                     {computerBoard.map((row, i) => (
                       <div key={i} className="row">
                         {row.map((cell, j) => (
