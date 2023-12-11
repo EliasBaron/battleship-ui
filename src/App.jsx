@@ -50,10 +50,11 @@ function App() {
     generateRemainingShips(initialShipData)
   );
 
-  const [turn, setTurn] = useState("player");
+  const [turn, setTurn] = useState("");
 
   useEffect(() => {
     if (Object.values(placedShips).every((value) => value)) {
+      setTurn("player");
       generateComputerBoard();
     }
   }, [placedShips]);
@@ -303,7 +304,7 @@ function App() {
 
     setRemainingComputerShips(generateRemainingShips(initialShipData));
 
-    setTurn("player");
+    setTurn("");
   }
 
   return (
@@ -346,7 +347,7 @@ function App() {
         ))}
       </div>
 
-      <div className="board">
+      <div className={`board ${turn === "user" ? "opacity" : ""}`}>
         {userBoard.map((row, i) => (
           <div key={i} className="row">
             {row.map((cell, j) => (
