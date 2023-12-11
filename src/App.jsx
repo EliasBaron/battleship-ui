@@ -52,6 +52,8 @@ function App() {
 
   const [turn, setTurn] = useState("");
 
+  const [winCount, setWinCount] = useState(0);
+
   useEffect(() => {
     if (Object.values(placedShips).every((value) => value)) {
       setTurn("player");
@@ -268,6 +270,12 @@ function App() {
     }
   }, [turn, computerHits]);
 
+  useEffect(() => {
+    if (Object.values(remainingComputerShips).every((value) => value === 0)) {
+      setWinCount(winCount + 1);
+    }
+  }, [remainingComputerShips]);
+
   // useEffect(() => {
 
   //     handleComputerClick();
@@ -309,6 +317,8 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Battleship</h1>
+      <p>Wins: {winCount}</p>
       <button onClick={resetGame}>Reset</button>
       <button
         onClick={() => {
