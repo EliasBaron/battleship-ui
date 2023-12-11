@@ -372,9 +372,7 @@ function App() {
                 }`}
                 onClick={() => handleClick(i, j)}
                 disabled={cell}
-              >
-                {cell || ""}
-              </button>
+              ></button>
             ))}
           </div>
         ))}
