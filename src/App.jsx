@@ -31,7 +31,9 @@ function App() {
 
   const [computerHits, setComputerHits] = useState(generateEmptyBoard());
   const [computerMisses, setComputerMisses] = useState(generateEmptyBoard());
-  const [availableCells, setAvailableCells] = useState(generateAvailableCells());
+  const [availableCells, setAvailableCells] = useState(
+    generateAvailableCells()
+  );
 
   const [computerShips, setComputerShips] = useState({
     portaaviones: false,
@@ -63,7 +65,9 @@ function App() {
   }, [turn, computerHits]);
 
   function generateEmptyBoard() {
-    return Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false));
+    return Array.from({ length: BOARD_SIZE }, () =>
+      Array(BOARD_SIZE).fill(false)
+    );
   }
 
   function generateAvailableCells() {
@@ -166,18 +170,14 @@ function App() {
       if (canPlaceShip) {
         for (let k = 0; k < size; k++) {
           if (orientation === "horizontal") {
-            newBoard[i][j + k] = "S";
+            newBoard[i][j + k] = selectedShip; // Update this line
           } else {
-            newBoard[i + k][j] = "S";
+            newBoard[i + k][j] = selectedShip; // Update this line
           }
         }
         setUserBoard(newBoard);
         setPlacedShips({ ...placedShips, [selectedShip]: true });
         setSelectedShip(null);
-
-        const remainingShips = { ...remainingPlayerShips };
-        remainingShips[selectedShip] -= 1;
-        setRemainingPlayerShips(remainingShips);
       }
     }
   }
@@ -188,12 +188,53 @@ function App() {
       setUserHits(newHits);
 
       const ship = computerBoard[i][j];
-      const remainingShips = decreaseRemainingShips(remainingComputerShips, ship);
+      const remainingShips = decreaseRemainingShips(
+        remainingComputerShips,
+        ship
+      );
       setRemainingComputerShips(remainingShips);
     } else {
       const newMisses = markMiss(userMisses, i, j);
       setUserMisses(newMisses);
       setTurn("computer");
+    }
+  }
+
+  function handleComputerClick() {
+    if (availableCells.length === 0) {
+      console.log("No available cells. Game over?");
+      return;
+    }
+
+    // Choose a random cell from the available cells
+    const randomIndex = Math.floor(Math.random() * availableCells.length);
+    const { i, j } = availableCells[randomIndex];
+
+    // Mark the chosen cell as used
+    const updatedCells = availableCells.filter(
+      (cell) => cell.i !== i || cell.j !== j
+    );
+    setAvailableCells(updatedCells);
+
+    if (userBoard[i][j] !== null) {
+      // The computer hit the user's ship
+      const newHits = markHit(computerHits, i, j);
+      setComputerHits(newHits);
+
+      const ship = userBoard[i][j];
+
+      // Update remaining ships
+      const remainingShips = decreaseRemainingShips(remainingPlayerShips, ship);
+      setRemainingPlayerShips(remainingShips);
+
+      // Mark the user's ship as hit on the user's board
+      const newBoard = markHit([...userBoard], i, j);
+      setUserBoard(newBoard);
+    } else {
+      // The computer missed the user's ship
+      const newMisses = markMiss(computerMisses, i, j);
+      setComputerMisses(newMisses);
+      setTurn("player");
     }
   }
 
@@ -211,7 +252,9 @@ function App() {
 
   function decreaseRemainingShips(remainingShips, ship) {
     const newRemainingShips = { ...remainingShips };
-    newRemainingShips[ship] -= 1;
+    if (newRemainingShips[ship] > 0) {
+      newRemainingShips[ship] -= 1;
+    }
     return newRemainingShips;
   }
 
@@ -224,38 +267,8 @@ function App() {
   // useEffect(() => {
 
   //     handleComputerClick();
-    
+
   // }, [turn, computerHits]);
-
-  function handleComputerClick() {
-    if (availableCells.length === 0) {
-      console.log("No available cells. Game over?");
-      return;
-    }
-
-    // Choose a random cell from the available cells
-    const randomIndex = Math.floor(Math.random() * availableCells.length);
-    const { i, j } = availableCells[randomIndex];
-
-    // Mark the chosen cell as used
-    const updatedCells = availableCells.filter((cell) => cell.i !== i || cell.j !== j);
-    setAvailableCells(updatedCells);
-
-    if (userBoard[i][j] === "S") {
-      const newHits = markHit(computerHits, i, j);
-      setComputerHits(newHits);
-
-      const remainingShips = decreaseRemainingShips(remainingPlayerShips, userBoard[i][j]);
-      setRemainingPlayerShips(remainingShips);
-
-      const newBoard = markHit([...userBoard], i, j);
-      setUserBoard(newBoard);
-    } else {
-      const newMisses = markMiss(computerMisses, i, j);
-      setComputerMisses(newMisses);
-      setTurn("player");
-    }
-  }
 
   function resetGame() {
     setUserBoard(initialBoard);
@@ -336,7 +349,7 @@ function App() {
             {row.map((cell, j) => (
               <button
                 key={j}
-                className={`cell ${cell === "S" ? "ship" : ""} ${
+                className={`cell ${cell ? "ship" : ""} ${
                   computerHits[i][j]
                     ? "hit"
                     : computerMisses[i][j]
@@ -344,8 +357,10 @@ function App() {
                     : ""
                 }`}
                 onClick={() => handleClick(i, j)}
-                disabled={cell === "S"}
-              ></button>
+                disabled={cell}
+              >
+                {cell || ""}
+              </button>
             ))}
           </div>
         ))}
@@ -357,60 +372,61 @@ function App() {
             <p>YOU LOSE!</p>
           ) : (
             <>
-              <p>The war started!</p>
+              {Object.values(remainingComputerShips).every(
+                (value) => value === 0
+              ) ? (
+                <p>YOU WIN!</p>
+              ) : (
+                <>
+                  <p>The war started!</p>
 
-              <div className="ship-counters">
-                <p>Remaining Player Ships:</p>
-                <ul>
-                  {Object.keys(remainingPlayerShips).map((ship) => (
-                    <li key={ship}>
-                      {ship}: {remainingPlayerShips[ship]}
-                    </li>
-                  ))}
-                </ul>
+                  <div className="ship-counters">
+                    <p>Remaining Player Ships:</p>
+                    <ul>
+                      {Object.keys(remainingPlayerShips).map((ship) => (
+                        <li key={ship}>
+                          {ship}: {remainingPlayerShips[ship]}
+                        </li>
+                      ))}
+                    </ul>
 
-                <p>Remaining Computer Ships:</p>
-                <ul>
-                  {Object.keys(remainingComputerShips).map((ship) => (
-                    <li key={ship}>
-                      {ship}: {remainingComputerShips[ship]}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                    <p>Remaining Computer Ships:</p>
+                    <ul>
+                      {Object.keys(remainingComputerShips).map((ship) => (
+                        <li key={ship}>
+                          {ship}: {remainingComputerShips[ship]}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              <p>Computer's Board:</p>
+                  <p>Computer's Board:</p>
 
-              <div className="board">
-                {computerBoard.map((row, i) => (
-                  <div key={i} className="row">
-                    {row.map((cell, j) => (
-                      <button
-                        key={j}
-                        className={`cell ${
-                          userHits[i][j]
-                            ? "hit"
-                            : userMisses[i][j]
-                            ? "miss"
-                            : ""
-                        }`}
-                        onClick={() => handleUserClick(i, j)}
-                        disabled={userHits[i][j] || userMisses[i][j]}
-                      ></button>
+                  <div className="board">
+                    {computerBoard.map((row, i) => (
+                      <div key={i} className="row">
+                        {row.map((cell, j) => (
+                          <button
+                            key={j}
+                            className={`cell ${
+                              userHits[i][j]
+                                ? "hit"
+                                : userMisses[i][j]
+                                ? "miss"
+                                : ""
+                            }`}
+                            onClick={() => handleUserClick(i, j)}
+                            disabled={userHits[i][j] || userMisses[i][j]}
+                          ></button>
+                        ))}
+                      </div>
                     ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </>
           )}
         </>
-      )}
-
-      {Object.values(remainingComputerShips).every((value) => value === 0) && (
-        <p>YOU WIN!</p>
-      )}
-      {Object.values(remainingPlayerShips).every((value) => value === 0) && (
-        <p>YOU LOSE!</p>
       )}
     </div>
   );
