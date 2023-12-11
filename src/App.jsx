@@ -58,11 +58,6 @@ function App() {
     }
   }, [placedShips]);
 
-  useEffect(() => {
-    if (turn === "computer") {
-      handleComputerClick();
-    }
-  }, [turn, computerHits]);
 
   function generateEmptyBoard() {
     return Array.from({ length: BOARD_SIZE }, () =>
@@ -170,9 +165,9 @@ function App() {
       if (canPlaceShip) {
         for (let k = 0; k < size; k++) {
           if (orientation === "horizontal") {
-            newBoard[i][j + k] = selectedShip; // Update this line
+            newBoard[i][j + k] = selectedShip;
           } else {
-            newBoard[i + k][j] = selectedShip; // Update this line
+            newBoard[i + k][j] = selectedShip; 
           }
         }
         setUserBoard(newBoard);
@@ -183,6 +178,9 @@ function App() {
   }
 
   function handleUserClick(i, j) {
+    if (turn !== "player") {
+      return;
+    }
     if (computerBoard[i][j] !== null) {
       const newHits = markHit(userHits, i, j);
       setUserHits(newHits);
@@ -201,6 +199,10 @@ function App() {
   }
 
   function handleComputerClick() {
+    if (turn !== "computer") {
+      return;
+    }
+
     if (availableCells.length === 0) {
       console.log("No available cells. Game over?");
       return;
@@ -259,8 +261,10 @@ function App() {
   }
 
   useEffect(() => {
-    if (turn === "computer" && computerHits.flat().length < 17) {
-      handleComputerClick();
+    if (turn === "computer") {
+      setTimeout(() => {
+        handleComputerClick();
+      }, 1000);
     }
   }, [turn, computerHits]);
 
