@@ -1,6 +1,6 @@
 # Battleship Game
 
-This is a simple implementation of the classic Battleship game. The game is played on a 10x10 board against the computer, which takes random decisions.
+This is a simple implementation of the classic Battleship game. The game is played on a 10x10 board against the computer, which makes random decisions.
 
 ## Features
 
@@ -17,6 +17,7 @@ This is a simple implementation of the classic Battleship game. The game is play
 3. Click on a cell in the computer's board to attack. If a ship is hit, the cell will change color.
 4. The computer will take its turn and attack your board.
 5. The game continues until all ships of one player are destroyed. The player with remaining ships wins.
+6. Enjoy!
 
 ## Running the Game
 
