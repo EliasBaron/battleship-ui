@@ -357,7 +357,7 @@ function App() {
         ))}
       </div>
 
-      <div className={`board ${turn === "user" ? "opacity" : ""}`}>
+      <div className={`board ${turn === "player" ? "opacity" : ""}`}>
         {userBoard.map((row, i) => (
           <div key={i} className="row">
             {row.map((cell, j) => (
