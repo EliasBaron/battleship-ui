@@ -196,8 +196,8 @@ function App() {
     } else {
       const newMisses = markMiss(userMisses, i, j);
       setUserMisses(newMisses);
-      setTurn("computer");
     }
+    setTurn("computer");
   }
 
   function handleComputerClick() {
@@ -238,8 +238,8 @@ function App() {
       // The computer missed the user's ship
       const newMisses = markMiss(computerMisses, i, j);
       setComputerMisses(newMisses);
-      setTurn("player");
     }
+    setTurn("player");
   }
 
   function markHit(board, i, j) {
@@ -395,20 +395,24 @@ function App() {
                   <div className="ship-counters">
                     <p>Remaining Player Ships:</p>
                     <ul>
-                      {Object.keys(remainingPlayerShips).map((ship) => (
-                        <li key={ship}>
-                          {ship}: {remainingPlayerShips[ship]}
-                        </li>
-                      ))}
+                      {Object.entries(remainingPlayerShips).map(
+                        ([ship, count]) => (
+                          <li key={ship} className={count === 0 ? "sunk" : ""}>
+                            {ship}
+                          </li>
+                        )
+                      )}
                     </ul>
 
                     <p>Remaining Computer Ships:</p>
                     <ul>
-                      {Object.keys(remainingComputerShips).map((ship) => (
-                        <li key={ship}>
-                          {ship}: {remainingComputerShips[ship]}
-                        </li>
-                      ))}
+                      {Object.entries(remainingComputerShips).map(
+                        ([ship, count]) => (
+                          <li key={ship} className={count === 0 ? "sunk" : ""}>
+                            {ship}
+                          </li>
+                        )
+                      )}
                     </ul>
                   </div>
 

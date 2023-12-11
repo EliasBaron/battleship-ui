@@ -71,3 +71,7 @@ button.cell.miss {
 .opacity {
   opacity: 0.7;
 }
+
+.sunk {
+  text-decoration: line-through;
+}
