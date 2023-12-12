@@ -355,8 +355,8 @@ function App() {
                 </>
               )}
 
-              {/* Move this block outside the warStarted condition */}
               <div className="boards">
+                <div className="board">
                 <p>Your Board:</p>
                 <div className={`board ${turn === "player" ? "opacity" : ""}`}>
                   <Board
@@ -370,7 +370,7 @@ function App() {
               </div>
 
               {warStarted && (
-                <>
+                <div className="board">
                   <p>Computer's Board:</p>
                   <div
                     className={`board ${turn === "computer" ? "opacity" : ""}`}
@@ -383,8 +383,9 @@ function App() {
                       handleClick={handleUserClick}
                     />
                   </div>
-                </>
+                </div>
               )}
+              </div>
             </>
           )}
         </>

@@ -2,7 +2,7 @@ import React from "react";
 
 function ShipCounters({ remainingShips, isPlayer }) {
   return (
-    <div className="ship-counters">
+    <div className="ship-counter">
       <p>{isPlayer ? "Remaining Player Ships:" : "Remaining Computer Ships:"}</p>
       <ul>
         {Object.entries(remainingShips).map(([ship, count]) => (

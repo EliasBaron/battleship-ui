@@ -1,8 +1,26 @@
+body {
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
 .app-container {
+  justify-content: center;
   text-align: center;
   padding: 20px;
-  display : flex;
+  display: flex;
   flex-direction: column;
+  width: 80%;
+  margin: auto;
+}
+
+.ship-counters {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 button.ship {
@@ -76,4 +94,11 @@ button.cell.miss {
 
 .sunk {
   text-decoration: line-through;
+}
+
+.boards {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
