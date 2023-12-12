@@ -188,41 +188,30 @@ function App() {
   }
 
   function handleComputerClick() {
-    if (turn !== "computer") {
+    if (turn !== "computer" || availableCells.length === 0) {
       return;
     }
 
-    if (availableCells.length === 0) {
-      console.log("No available cells. Game over?");
-      return;
-    }
-
-    // Choose a random cell from the available cells
     const randomIndex = Math.floor(Math.random() * availableCells.length);
     const { i, j } = availableCells[randomIndex];
 
-    // Mark the chosen cell as used
     const updatedCells = availableCells.filter(
       (cell) => cell.i !== i || cell.j !== j
     );
     setAvailableCells(updatedCells);
 
     if (userBoard[i][j] !== null) {
-      // The computer hit the user's ship
       const newHits = markHit(computerHits, i, j);
       setComputerHits(newHits);
 
       const ship = userBoard[i][j];
 
-      // Update remaining ships
       const remainingShips = decreaseRemainingShips(remainingPlayerShips, ship);
       setRemainingPlayerShips(remainingShips);
 
-      // Mark the user's ship as hit on the user's board
       const newBoard = markHit([...userBoard], i, j);
       setUserBoard(newBoard);
     } else {
-      // The computer missed the user's ship
       const newMisses = markMiss(computerMisses, i, j);
       setComputerMisses(newMisses);
     }
