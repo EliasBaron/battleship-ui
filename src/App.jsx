@@ -139,21 +139,21 @@ function App() {
       let newBoard = [...userBoard];
       let canPlaceShip = true;
       const { size, orientation } = shipData[selectedShip];
-
+  
       for (let k = 0; k < size; k++) {
         if (orientation === "horizontal") {
-          if (j + k >= BOARD_SIZE || newBoard[i][j + k] === "S") {
+          if (j + k >= BOARD_SIZE || newBoard[i][j + k] !== null) {
             canPlaceShip = false;
             break;
           }
         } else {
-          if (i + k >= BOARD_SIZE || newBoard[i + k][j] === "S") {
+          if (i + k >= BOARD_SIZE || newBoard[i + k][j] !== null) {
             canPlaceShip = false;
             break;
           }
         }
       }
-
+  
       if (canPlaceShip) {
         for (let k = 0; k < size; k++) {
           if (orientation === "horizontal") {
@@ -165,6 +165,8 @@ function App() {
         setUserBoard(newBoard);
         setPlacedShips({ ...placedShips, [selectedShip]: true });
         setSelectedShip(null);
+      } else {
+        alert("Invalid ship position. Please choose a different position.");
       }
     }
   }
