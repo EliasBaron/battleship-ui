@@ -1,17 +1,16 @@
 import React from 'react';
 
-// Board component
-function Board({ board, handleClick }) {
+function Board({ board, handleCellClick, isUserBoard }) {
   return (
     <div className="board">
       {board.map((row, i) => (
         <div key={i} className="row">
           {row.map((cell, j) => (
-            <button
+            <div
               key={j}
-              className={`cell ${cell === "S" ? "ship" : ""}`}
-              onClick={() => handleClick(i, j)}
-            ></button>
+              className={`cell ${cell}`}
+              onClick={isUserBoard ? null : () => handleCellClick(i, j)}
+            />
           ))}
         </div>
       ))}

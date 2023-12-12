@@ -276,12 +276,6 @@ function App() {
     }
   }, [remainingComputerShips]);
 
-  // useEffect(() => {
-
-  //     handleComputerClick();
-
-  // }, [turn, computerHits]);
-
   function resetGame() {
     setUserBoard(initialBoard);
     setShipData(initialShipData);
