@@ -12,19 +12,19 @@ function App() {
   );
 
   const initialShipData = {
-    portaaviones: { size: 5, orientation: "horizontal" },
-    crucero: { size: 4, orientation: "horizontal" },
-    submarino: { size: 3, orientation: "horizontal" },
-    lancha: { size: 2, orientation: "horizontal" },
+    carrier: { size: 5, orientation: "horizontal" },
+    battleship: { size: 4, orientation: "horizontal" },
+    submarine: { size: 3, orientation: "horizontal" },
+    destroyer: { size: 2, orientation: "horizontal" },
   };
 
   const [userBoard, setUserBoard] = useState(initialBoard);
   const [shipData, setShipData] = useState(initialShipData);
   const [placedShips, setPlacedShips] = useState({
-    portaaviones: false,
-    crucero: false,
-    submarino: false,
-    lancha: false,
+    carrier: false,
+    battleship: false,
+    submarine: false,
+    destroyer: false,
   });
   const [selectedShip, setSelectedShip] = useState(null);
 
@@ -86,10 +86,10 @@ function App() {
     );
 
     const computerShipData = {
-      portaaviones: { size: 5, orientation: "horizontal" },
-      crucero: { size: 4, orientation: "vertical" },
-      submarino: { size: 3, orientation: "horizontal" },
-      lancha: { size: 2, orientation: "vertical" },
+      carrier: { size: 5, orientation: "horizontal" },
+      battleship: { size: 4, orientation: "vertical" },
+      submarine: { size: 3, orientation: "horizontal" },
+      destroyer: { size: 2, orientation: "vertical" },
     };
 
     for (const ship in computerShipData) {
@@ -257,14 +257,48 @@ function App() {
     }
   }, [remainingComputerShips]);
 
+   function changeOrientation() {
+    if (selectedShip && !placedShips[selectedShip]) {
+      const newOrientation =
+        shipData[selectedShip].orientation === "horizontal"
+          ? "vertical"
+          : "horizontal";
+
+      setShipData({
+        ...shipData,
+        [selectedShip]: {
+          ...shipData[selectedShip],
+          orientation: newOrientation,
+        },
+      });
+    }
+  } 
+  
+  function changeOrientation() {
+    if (selectedShip && !placedShips[selectedShip]) {
+      const newOrientation =
+        shipData[selectedShip].orientation === "horizontal"
+          ? "vertical"
+          : "horizontal";
+
+      setShipData({
+        ...shipData,
+        [selectedShip]: {
+          ...shipData[selectedShip],
+          orientation: newOrientation,
+        },
+      });
+    }
+  }
+
   function resetGame() {
     setUserBoard(initialBoard);
     setShipData(initialShipData);
     setPlacedShips({
-      portaaviones: false,
-      crucero: false,
-      submarino: false,
-      lancha: false,
+      carrier: false,
+      battleship: false,
+      submarine: false,
+      destroyer: false,
     });
     setSelectedShip(null);
 
@@ -286,29 +320,7 @@ function App() {
   return (
     <div className="App">
       <h1>Battleship</h1>
-      <p>Wins: {winCount}</p>
-      <button onClick={resetGame}>Reset</button>
-      <button
-        onClick={() => {
-          if (selectedShip && !placedShips[selectedShip]) {
-            const newOrientation =
-              shipData[selectedShip].orientation === "horizontal"
-                ? "vertical"
-                : "horizontal";
-
-            setShipData({
-              ...shipData,
-              [selectedShip]: {
-                ...shipData[selectedShip],
-                orientation: newOrientation,
-              },
-            });
-          }
-        }}
-      >
-        Change orientation (Current:{" "}
-        {selectedShip ? shipData[selectedShip].orientation : "N/A"})
-      </button>
+      <p>Your Wins: {winCount}</p>
 
       <div className="button-group">
         {Object.entries(shipData).map(([shipKey, ship]) => (
@@ -322,6 +334,12 @@ function App() {
           />
         ))}
       </div>
+
+      {selectedShip && !placedShips[selectedShip] && (
+        <button onClick={changeOrientation}>
+          Change orientation (Current: {shipData[selectedShip].orientation})
+        </button>
+      )}
 
       <div className={`board ${turn === "player" ? "opacity" : ""}`}>
         <Board
@@ -376,6 +394,7 @@ function App() {
           )}
         </>
       )}
+      <button onClick={resetGame}>Reset game!</button>
     </div>
   );
 }
