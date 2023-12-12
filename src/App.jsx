@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Board from "./components/Board";
+import ShipCounters from "./components/ShipCounters";
+import ShipButton from "./components/ShipButton";
 
 function App() {
   const BOARD_SIZE = 10;
@@ -307,17 +309,15 @@ function App() {
       </button>
 
       <div className="button-group">
-        {Object.keys(shipData).map((ship) => (
-          <button
-            key={ship}
-            className={`ship ${selectedShip === ship ? "selected" : ""} ${
-              placedShips[ship] ? "placed" : ""
-            }`}
-            disabled={placedShips[ship]}
-            onClick={() => setSelectedShip(ship)}
-          >
-            {ship} (Size: {shipData[ship].size})
-          </button>
+        {Object.entries(shipData).map(([shipKey, ship]) => (
+          <ShipButton
+            key={shipKey}
+            shipKey={shipKey}
+            ship={ship}
+            selectedShip={selectedShip}
+            placed={placedShips[shipKey]}
+            onClick={setSelectedShip}
+          />
         ))}
       </div>
 
@@ -345,29 +345,15 @@ function App() {
                 <>
                   <p>The war started!</p>
 
-                  <div className="ship-counters">
-                    <p>Remaining Player Ships:</p>
-                    <ul>
-                      {Object.entries(remainingPlayerShips).map(
-                        ([ship, count]) => (
-                          <li key={ship} className={count === 0 ? "sunk" : ""}>
-                            {ship}
-                          </li>
-                        )
-                      )}
-                    </ul>
+                  <ShipCounters
+                    remainingShips={remainingPlayerShips}
+                    isPlayer={true}
+                  />
 
-                    <p>Remaining Computer Ships:</p>
-                    <ul>
-                      {Object.entries(remainingComputerShips).map(
-                        ([ship, count]) => (
-                          <li key={ship} className={count === 0 ? "sunk" : ""}>
-                            {ship}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
+                  <ShipCounters
+                    remainingShips={remainingComputerShips}
+                    isPlayer={false}
+                  />
 
                   <p>Computer's Board:</p>
 
