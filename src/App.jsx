@@ -310,7 +310,7 @@ function App() {
       {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
         <>
           <p className="title">YOU LOSE! :(</p>
-          <p className="subtitle">Wanna play again? ⬇</p>
+          <p className="subtitle">Want a rematch? ⬇</p>
         </>
       ) : (
         <>
@@ -400,7 +400,7 @@ function App() {
           )}
         </>
       )}
-      <button onClick={resetGame}>New Game</button>
+      <button className="rematch-button"onClick={resetGame}>New Game</button>
     </div>
   );
 }
