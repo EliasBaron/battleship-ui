@@ -35,13 +35,6 @@ function App() {
     generateAvailableCells()
   );
 
-  const [computerShips, setComputerShips] = useState({
-    portaaviones: false,
-    crucero: false,
-    submarino: false,
-    lancha: false,
-  });
-
   const [remainingPlayerShips, setRemainingPlayerShips] = useState(
     generateRemainingShips(initialShipData)
   );
@@ -101,12 +94,6 @@ function App() {
     }
 
     setComputerBoard(newComputerBoard);
-    setComputerShips({
-      portaaviones: true,
-      crucero: true,
-      submarino: true,
-      lancha: true,
-    });
   }
 
   function placeComputerShip(board, ship, { size, orientation }) {
@@ -294,13 +281,6 @@ function App() {
     setComputerHits(generateEmptyBoard());
     setComputerMisses(generateEmptyBoard());
     setAvailableCells(generateAvailableCells());
-
-    setComputerShips({
-      portaaviones: false,
-      crucero: false,
-      submarino: false,
-      lancha: false,
-    });
 
     setRemainingPlayerShips(generateRemainingShips(initialShipData));
 
