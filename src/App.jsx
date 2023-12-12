@@ -304,17 +304,23 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Battleship</h1>
-      <p>Your Wins: {winCount}</p>
+      <h1 className="title">Battleship</h1>
+      <p className="subtitle">Your Wins: {winCount}</p>
 
       {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
-        <p>YOU LOSE!</p>
+        <>
+          <p className="title">YOU LOSE! :(</p>
+          <p className="subtitle">Wanna play again? ⬇</p>
+        </>
       ) : (
         <>
           {Object.values(remainingComputerShips).every(
             (value) => value === 0
           ) ? (
-            <p>YOU WIN!</p>
+            <>
+              <p className="title">YOU WIN! :)</p>
+              <p className="subtitle">Wanna play again? ⬇</p>
+            </>
           ) : (
             <>
               {!warStarted && (
@@ -341,7 +347,7 @@ function App() {
 
               {warStarted && (
                 <>
-                  <h2>The war started!</h2>
+                  <h2 className="title">The war started!</h2>
                   <div className="ship-counters">
                     <ShipCounters
                       shipData={shipData}
@@ -357,34 +363,38 @@ function App() {
 
               <div className="boards">
                 <div className="board">
-                <p>Your Board:</p>
-                <div className={`board ${turn === "player" ? "opacity" : ""}`}>
-                  <Board
-                    board={userBoard}
-                    hits={computerHits}
-                    misses={computerMisses}
-                    isUserBoard={true}
-                    handleClick={handleClick}
-                  />
-                </div>
-              </div>
-
-              {warStarted && (
-                <div className="board">
-                  <p>Computer's Board:</p>
+                  <p className="text">Your Board:</p>
                   <div
-                    className={`board ${turn === "computer" ? "opacity" : ""}`}
+                    className={`board ${turn === "player" ? "opacity" : ""}`}
                   >
                     <Board
-                      board={computerBoard}
-                      hits={userHits}
-                      misses={userMisses}
-                      isUserBoard={false}
-                      handleClick={handleUserClick}
+                      board={userBoard}
+                      hits={computerHits}
+                      misses={computerMisses}
+                      isUserBoard={true}
+                      handleClick={handleClick}
                     />
                   </div>
                 </div>
-              )}
+
+                {warStarted && (
+                  <div className="board">
+                    <p className="text">Computer's Board:</p>
+                    <div
+                      className={`board ${
+                        turn === "computer" ? "opacity" : ""
+                      }`}
+                    >
+                      <Board
+                        board={computerBoard}
+                        hits={userHits}
+                        misses={userMisses}
+                        isUserBoard={false}
+                        handleClick={handleUserClick}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}

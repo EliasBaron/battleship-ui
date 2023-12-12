@@ -4,6 +4,29 @@ body {
   height: 100vh;
   margin: 0;
   padding: 0;
+  background-color: #0e0123;
+}
+
+.text {
+  color: #f9f9f9;
+  font-size: .9em;
+  font-weight: bold;
+}
+
+.title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #f9f9f9;
+}
+
+.subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #f9f9f9;
+  
 }
 
 .app-container {
@@ -24,7 +47,8 @@ body {
 }
 
 button.ship {
-  color: white;
+  background-color: #e8dfdd;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -64,6 +88,19 @@ button.cell {
   border: 0.1em solid black;
   background-color: lightblue;
   box-sizing: border-box;
+  cursor: pointer;
+}
+
+button.cell:hover {
+  opacity: 0.7;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell:disabled:hover {
+  opacity: 1;
 }
 
 button.cell.ship {
