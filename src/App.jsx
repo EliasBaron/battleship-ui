@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import Board from "./components/Board";
 
 function App() {
   const BOARD_SIZE = 10;
@@ -321,24 +322,13 @@ function App() {
       </div>
 
       <div className={`board ${turn === "player" ? "opacity" : ""}`}>
-        {userBoard.map((row, i) => (
-          <div key={i} className="row">
-            {row.map((cell, j) => (
-              <button
-                key={j}
-                className={`cell ${cell ? "ship" : ""} ${
-                  computerHits[i][j]
-                    ? "hit"
-                    : computerMisses[i][j]
-                    ? "miss"
-                    : ""
-                }`}
-                onClick={() => handleClick(i, j)}
-                disabled={cell}
-              ></button>
-            ))}
-          </div>
-        ))}
+        <Board
+          board={userBoard}
+          hits={computerHits}
+          misses={computerMisses}
+          isUserBoard={true}
+          handleClick={handleClick}
+        />
       </div>
 
       {Object.values(placedShips).every((value) => value) && (
@@ -384,24 +374,13 @@ function App() {
                   <div
                     className={`board ${turn === "computer" ? "opacity" : ""}`}
                   >
-                    {computerBoard.map((row, i) => (
-                      <div key={i} className="row">
-                        {row.map((cell, j) => (
-                          <button
-                            key={j}
-                            className={`cell ${
-                              userHits[i][j]
-                                ? "hit"
-                                : userMisses[i][j]
-                                ? "miss"
-                                : ""
-                            }`}
-                            onClick={() => handleUserClick(i, j)}
-                            disabled={userHits[i][j] || userMisses[i][j]}
-                          ></button>
-                        ))}
-                      </div>
-                    ))}
+                    <Board
+                      board={computerBoard}
+                      hits={userHits}
+                      misses={userMisses}
+                      isUserBoard={false}
+                      handleClick={handleUserClick}
+                    />
                   </div>
                 </>
               )}
