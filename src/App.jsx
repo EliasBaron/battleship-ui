@@ -46,6 +46,8 @@ function App() {
     generateRemainingShips(initialShipData)
   );
 
+  const warStarted = Object.values(placedShips).every((value) => value);
+
   const [turn, setTurn] = useState("");
 
   const [winCount, setWinCount] = useState(0);
@@ -322,18 +324,20 @@ function App() {
       <h1>Battleship</h1>
       <p>Your Wins: {winCount}</p>
 
-      <div className="button-group">
-        {Object.entries(shipData).map(([shipKey, ship]) => (
-          <ShipButton
-            key={shipKey}
-            shipKey={shipKey}
-            ship={ship}
-            selectedShip={selectedShip}
-            placed={placedShips[shipKey]}
-            onClick={setSelectedShip}
-          />
-        ))}
-      </div>
+      {!warStarted && (
+        <div className="button-group">
+          {Object.entries(shipData).map(([shipKey, ship]) => (
+            <ShipButton
+              key={shipKey}
+              shipKey={shipKey}
+              ship={ship}
+              selectedShip={selectedShip}
+              placed={placedShips[shipKey]}
+              onClick={setSelectedShip}
+            />
+          ))}
+        </div>
+      )}
 
       {selectedShip && !placedShips[selectedShip] && (
         <button onClick={changeOrientation}>
@@ -394,7 +398,7 @@ function App() {
           )}
         </>
       )}
-      <button onClick={resetGame}>Reset game!</button>
+      <button onClick={resetGame}>New Game!</button>
     </div>
   );
 }
