@@ -141,7 +141,7 @@ function App() {
       let newBoard = [...userBoard];
       let canPlaceShip = true;
       const { size, orientation } = shipData[selectedShip];
-  
+
       for (let k = 0; k < size; k++) {
         if (orientation === "horizontal") {
           if (j + k >= BOARD_SIZE || newBoard[i][j + k] !== null) {
@@ -155,7 +155,7 @@ function App() {
           }
         }
       }
-  
+
       if (canPlaceShip) {
         for (let k = 0; k < size; k++) {
           if (orientation === "horizontal") {
@@ -259,23 +259,6 @@ function App() {
     }
   }, [remainingComputerShips]);
 
-   function changeOrientation() {
-    if (selectedShip && !placedShips[selectedShip]) {
-      const newOrientation =
-        shipData[selectedShip].orientation === "horizontal"
-          ? "vertical"
-          : "horizontal";
-
-      setShipData({
-        ...shipData,
-        [selectedShip]: {
-          ...shipData[selectedShip],
-          orientation: newOrientation,
-        },
-      });
-    }
-  } 
-  
   function changeOrientation() {
     if (selectedShip && !placedShips[selectedShip]) {
       const newOrientation =
@@ -320,67 +303,75 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="app-container">
       <h1>Battleship</h1>
       <p>Your Wins: {winCount}</p>
 
-      {!warStarted && (
-        <div className="button-group">
-          {Object.entries(shipData).map(([shipKey, ship]) => (
-            <ShipButton
-              key={shipKey}
-              shipKey={shipKey}
-              ship={ship}
-              selectedShip={selectedShip}
-              placed={placedShips[shipKey]}
-              onClick={setSelectedShip}
-            />
-          ))}
-        </div>
-      )}
-
-      {selectedShip && !placedShips[selectedShip] && (
-        <button onClick={changeOrientation}>
-          Change orientation (Current: {shipData[selectedShip].orientation})
-        </button>
-      )}
-
-      <div className={`board ${turn === "player" ? "opacity" : ""}`}>
-        <Board
-          board={userBoard}
-          hits={computerHits}
-          misses={computerMisses}
-          isUserBoard={true}
-          handleClick={handleClick}
-        />
-      </div>
-
-      {Object.values(placedShips).every((value) => value) && (
+      {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
+        <p>YOU LOSE!</p>
+      ) : (
         <>
-          {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
-            <p>YOU LOSE!</p>
+          {Object.values(remainingComputerShips).every(
+            (value) => value === 0
+          ) ? (
+            <p>YOU WIN!</p>
           ) : (
             <>
-              {Object.values(remainingComputerShips).every(
-                (value) => value === 0
-              ) ? (
-                <p>YOU WIN!</p>
-              ) : (
+              {!warStarted && (
+                <div className="button-group">
+                  {Object.entries(shipData).map(([shipKey, ship]) => (
+                    <ShipButton
+                      key={shipKey}
+                      shipKey={shipKey}
+                      ship={ship}
+                      selectedShip={selectedShip}
+                      placed={placedShips[shipKey]}
+                      onClick={setSelectedShip}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {selectedShip && !placedShips[selectedShip] && (
+                <button onClick={changeOrientation}>
+                  Change orientation (Current:{" "}
+                  {shipData[selectedShip].orientation})
+                </button>
+              )}
+
+              {warStarted && (
                 <>
-                  <p>The war started!</p>
+                  <h2>The war started!</h2>
+                  <div className="ship-counters">
+                    <ShipCounters
+                      shipData={shipData}
+                      remainingShips={remainingPlayerShips}
+                    />
+                    <ShipCounters
+                      shipData={shipData}
+                      remainingShips={remainingComputerShips}
+                    />
+                  </div>
+                </>
+              )}
 
-                  <ShipCounters
-                    remainingShips={remainingPlayerShips}
-                    isPlayer={true}
+              {/* Move this block outside the warStarted condition */}
+              <div className="boards">
+                <p>Your Board:</p>
+                <div className={`board ${turn === "player" ? "opacity" : ""}`}>
+                  <Board
+                    board={userBoard}
+                    hits={computerHits}
+                    misses={computerMisses}
+                    isUserBoard={true}
+                    handleClick={handleClick}
                   />
+                </div>
+              </div>
 
-                  <ShipCounters
-                    remainingShips={remainingComputerShips}
-                    isPlayer={false}
-                  />
-
+              {warStarted && (
+                <>
                   <p>Computer's Board:</p>
-
                   <div
                     className={`board ${turn === "computer" ? "opacity" : ""}`}
                   >
@@ -398,7 +389,7 @@ function App() {
           )}
         </>
       )}
-      <button onClick={resetGame}>New Game!</button>
+      <button onClick={resetGame}>New Game</button>
     </div>
   );
 }
