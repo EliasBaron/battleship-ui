@@ -339,7 +339,7 @@ function App() {
               )}
 
               {selectedShip && !placedShips[selectedShip] && (
-                <button onClick={changeOrientation}>
+                <button onClick={changeOrientation} className="orientation-button">
                   Change orientation (Current:{" "}
                   {shipData[selectedShip].orientation})
                 </button>

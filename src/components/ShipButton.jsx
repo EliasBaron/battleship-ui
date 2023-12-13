@@ -3,7 +3,7 @@ import React from "react";
 function ShipButton({ shipKey, ship, selectedShip, placed, onClick }) {
   return (
     <button
-      className={`ship ${selectedShip === shipKey ? "selected" : ""} ${
+      className={`ship-button ${selectedShip === shipKey ? "selected" : ""} ${
         placed ? "placed" : ""
       }`}
       disabled={placed}
