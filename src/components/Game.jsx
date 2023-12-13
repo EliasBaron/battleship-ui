@@ -315,13 +315,13 @@ export default function Game() {
       {areAllShipsSunk(remainingPlayerShips) ? (
         <GameOver
           message="YOU LOSE! :("
-          buttonText="Want a rematch? ⬇"
+          buttonText="Want a rematch?"
           resetGame={resetGame}
         />
       ) : areAllShipsSunk(remainingComputerShips) ? (
         <GameOver
           message="YOU WIN! :)"
-          buttonText="Wanna play again? ⬇"
+          buttonText="Wanna play again?"
           resetGame={resetGame}
         />
       ) : (

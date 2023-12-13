@@ -5,7 +5,7 @@ export default function GameOver({ message, buttonText, resetGame }) {
       <>
         <p className="text">{message}</p>
         <p className="subtitle">{buttonText}</p>
-        <button className="button margin-bottom" onClick={resetGame}>
+        <button className="newgame-button" onClick={resetGame}>
           New Game
         </button>
       </>

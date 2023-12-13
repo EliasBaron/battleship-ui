@@ -108,6 +108,21 @@ body {
   font-weight: bold;
 }
 
+.newgame-button {
+  background-color: #18BC9C;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 1em;
+  font-size: 1em;
+  min-width: 5em;
+  margin-top: 1em;
+  width: 60%; 
+  font-weight: bold;
+  align-self: center;
+}
+
 .button:hover {
   opacity: 0.7;
 }
@@ -201,7 +216,7 @@ button.cell.miss {
 
 .sunk {
   text-decoration: line-through;
-  color: #808080;
+  color: #841610 !important;
 }
 
 .direction{
