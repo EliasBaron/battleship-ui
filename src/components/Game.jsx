@@ -3,6 +3,7 @@ import "../App.css";
 import Board from "./gameComponents/Board";
 import ShipCounters from "./gameComponents/ShipCounters";
 import ShipButton from "./gameComponents/ShipButton";
+import GameOver from "./gameComponents/GameOver";
 
 export default function Game() {
   const BOARD_SIZE = 10;
@@ -302,107 +303,101 @@ export default function Game() {
     setTurn("");
   }
 
+  function areAllShipsSunk(ships) {
+    return Object.values(ships).every((value) => value === 0);
+  }
+
   return (
     <div className="app-container">
       <h1 className="maintitle">BATTLESHIP</h1>
       <p className="title">Your Wins: {winCount}</p>
 
-      {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
-        <>
-          <p className="text">YOU LOSE! :(</p>
-          <p className="subtitle">Want a rematch? ⬇</p>
-        </>
+      {areAllShipsSunk(remainingPlayerShips) ? (
+        <GameOver
+          message="YOU LOSE! :("
+          buttonText="Want a rematch? ⬇"
+          resetGame={resetGame}
+        />
+      ) : areAllShipsSunk(remainingComputerShips) ? (
+        <GameOver
+          message="YOU WIN! :)"
+          buttonText="Wanna play again? ⬇"
+          resetGame={resetGame}
+        />
       ) : (
         <>
-          {Object.values(remainingComputerShips).every(
-            (value) => value === 0
-          ) ? (
+          {!warStarted && (
+            <div className="button-group">
+              {Object.entries(shipData).map(([shipKey, ship]) => (
+                <ShipButton
+                  key={shipKey}
+                  shipKey={shipKey}
+                  ship={ship}
+                  selectedShip={selectedShip}
+                  placed={placedShips[shipKey]}
+                  onClick={setSelectedShip}
+                />
+              ))}
+            </div>
+          )}
+
+          {selectedShip && !placedShips[selectedShip] && (
+            <button onClick={changeOrientation} className="orientation-button">
+              Change orientation (Current: {shipData[selectedShip].orientation})
+            </button>
+          )}
+
+          {warStarted && (
             <>
-              <p className="text">YOU WIN! :)</p>
-              <p className="subtitle">Wanna play again? ⬇</p>
-            </>
-          ) : (
-            <>
-              {!warStarted && (
-                <div className="button-group">
-                  {Object.entries(shipData).map(([shipKey, ship]) => (
-                    <ShipButton
-                      key={shipKey}
-                      shipKey={shipKey}
-                      ship={ship}
-                      selectedShip={selectedShip}
-                      placed={placedShips[shipKey]}
-                      onClick={setSelectedShip}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {selectedShip && !placedShips[selectedShip] && (
-                <button onClick={changeOrientation} className="orientation-button">
-                  Change orientation (Current:{" "}
-                  {shipData[selectedShip].orientation})
-                </button>
-              )}
-
-              {warStarted && (
-                <>
-                  <h2 className="text">The war started!</h2>
-                  <div className="ship-counters">
-                    <ShipCounters
-                      shipData={shipData}
-                      remainingShips={remainingPlayerShips}
-                      isPlayer={true}
-                    />
-                    <ShipCounters
-                      shipData={shipData}
-                      remainingShips={remainingComputerShips}
-                      isPlayer={false}
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="boards">
-                <div className="board">
-                  <p className="text">Your Board:</p>
-                  <div
-                    className={`board ${turn === "player" ? "opacity" : ""}`}
-                  >
-                    <Board
-                      board={userBoard}
-                      hits={computerHits}
-                      misses={computerMisses}
-                      isUserBoard={true}
-                      handleClick={handleClick}
-                    />
-                  </div>
-                </div>
-
-                {warStarted && (
-                  <div className="board">
-                    <p className="text">Computer's Board:</p>
-                    <div
-                      className={`board ${
-                        turn === "computer" ? "opacity" : ""
-                      }`}
-                    >
-                      <Board
-                        board={computerBoard}
-                        hits={userHits}
-                        misses={userMisses}
-                        isUserBoard={false}
-                        handleClick={handleUserClick}
-                      />
-                    </div>
-                  </div>
-                )}
+              <h2 className="text">The war started!</h2>
+              <div className="ship-counters">
+                <ShipCounters
+                  shipData={shipData}
+                  remainingShips={remainingPlayerShips}
+                  isPlayer={true}
+                />
+                <ShipCounters
+                  shipData={shipData}
+                  remainingShips={remainingComputerShips}
+                  isPlayer={false}
+                />
               </div>
             </>
           )}
+
+          <div className="boards">
+            <div className="board">
+              <p className="text">Your Board:</p>
+              <div className={`board ${turn === "player" ? "opacity" : ""}`}>
+                <Board
+                  board={userBoard}
+                  hits={computerHits}
+                  misses={computerMisses}
+                  isUserBoard={true}
+                  handleClick={handleClick}
+                />
+              </div>
+            </div>
+
+            {warStarted && (
+              <div className="board">
+                <p className="text">Computer's Board:</p>
+                <div
+                  className={`board ${turn === "computer" ? "opacity" : ""}`}
+                >
+                  <Board
+                    board={computerBoard}
+                    hits={userHits}
+                    misses={userMisses}
+                    isUserBoard={false}
+                    handleClick={handleUserClick}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </>
       )}
-      <button className="button margin-bottom"onClick={resetGame}>New Game</button>
     </div>
   );
 }
