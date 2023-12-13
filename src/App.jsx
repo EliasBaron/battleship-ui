@@ -304,12 +304,12 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1 className="title">Battleship</h1>
-      <p className="subtitle">Your Wins: {winCount}</p>
+      <h1 className="maintitle">Battleship</h1>
+      <p className="title">Your Wins: {winCount}</p>
 
       {Object.values(remainingPlayerShips).every((value) => value === 0) ? (
         <>
-          <p className="title">YOU LOSE! :(</p>
+          <p className="text">YOU LOSE! :(</p>
           <p className="subtitle">Want a rematch? ⬇</p>
         </>
       ) : (
@@ -318,7 +318,7 @@ function App() {
             (value) => value === 0
           ) ? (
             <>
-              <p className="title">YOU WIN! :)</p>
+              <p className="text">YOU WIN! :)</p>
               <p className="subtitle">Wanna play again? ⬇</p>
             </>
           ) : (
@@ -347,7 +347,7 @@ function App() {
 
               {warStarted && (
                 <>
-                  <h2 className="title">The war started!</h2>
+                  <h2 className="text">The war started!</h2>
                   <div className="ship-counters">
                     <ShipCounters
                       shipData={shipData}
