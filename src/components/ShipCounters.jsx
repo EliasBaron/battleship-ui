@@ -6,7 +6,7 @@ function ShipCounters({ remainingShips, isPlayer }) {
       <p className="text">{isPlayer ? "Remaining Player Ships:" : "Remaining Computer Ships:"}</p>
       <ul>
         {Object.entries(remainingShips).map(([ship, count]) => (
-          <li key={ship} className={`text ${count === 0 ? "sunk" : ""}`}>            {ship}
+          <li key={ship} className={`text ${count === 0 ? "sunk" : ""} ${!isPlayer ? "direction" : ""}`}>            {ship}
           </li>
         ))}
       </ul>

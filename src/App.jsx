@@ -352,10 +352,12 @@ function App() {
                     <ShipCounters
                       shipData={shipData}
                       remainingShips={remainingPlayerShips}
+                      isPlayer={true}
                     />
                     <ShipCounters
                       shipData={shipData}
                       remainingShips={remainingComputerShips}
+                      isPlayer={false}
                     />
                   </div>
                 </>
