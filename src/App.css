@@ -170,11 +170,11 @@ button.cell.ship {
 }
 
 button.cell.hit {
-  background-color: #a12019;
+  background-color: #841610;
 }
 
 button.cell.miss {
-  background-color: #808080;
+  background-color: #646262;
 }
 
 .button-group {
