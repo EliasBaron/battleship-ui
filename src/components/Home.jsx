@@ -11,19 +11,19 @@ export default function Home() {
       <div className="home-container">
         <div className="home">
           <h2 className="text">Welcome to Battleship!</h2>
-          <p className="text">
+          <p className="simpletext">
             This is a simple implementation of the classic game Battleship. The
             rules are simple: each player places their ships on their board and
             then takes turns firing at the other player's board. The first
             player to sink all of the other player's ships wins!
           </p>
-          <p className="text">
-            To get started, click the "Start Game" button below. You'll be taken
-            to the game screen where you can place your ships and start playing!
-          </p>
-          <p className="text">
+          <p className="simpletext">
             If you need a refresher on the rules, click the "Rules" button
             below.
+          </p>
+          <p className="simpletext">
+            To get started, click the "Start Game" button below. You'll be taken
+            to the game screen where you can place your ships and start playing!
           </p>
         </div>
       </div>

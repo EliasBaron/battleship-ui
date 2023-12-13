@@ -11,33 +11,33 @@ export default function Rules() {
       <div className="home-container">
         <div className="rules">
           <h2 className="text">Battleship Rules</h2>
-          <p className="text">
+          <p className="simpletext">
             Battleship is a two-player naval warfare game where the goal is to
             sink all of the opponent's ships. Here are the basic rules:
           </p>
 
           <div className="rule-section">
-            <p className="text">
+            <p className="simpletext">
               1. Game Setup: Players have a grid-labeled board.
             </p>
-            <p className="text">
+            <p className="simpletext">
               2. Ship Placement: Each player places their ships on their board.
               The ships are carrier (5 cells), battleship (4 cells), submarine
               (3 cells), and destroyer (2 cells). Ships can be placed
               horizontally or vertically and cannot overlap.
             </p>
-            <p className="text">
+            <p className="simpletext">
               3. Taking Turns: Players call out coordinates to target opponent's
               grid. (click in this case)
             </p>
-            <p className="text">
+            <p className="simpletext">
               4. Hit and Miss: Targeted ships result in a hit; empty cells are
               misses.
             </p>
-            <p className="text">
+            <p className="simpletext">
               5. Sinking Ships: A ship sinks when all its cells are hit.
             </p>
-            <p className="text">
+            <p className="simpletext">
               6. Winning: The first to sink all opponent's ships wins.
             </p>
           </div>
