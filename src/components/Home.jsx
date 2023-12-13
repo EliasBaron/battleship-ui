@@ -1,6 +1,7 @@
 import React from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import battleship from "../assets/battleship.png";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export default function Home() {
             to the game screen where you can place your ships and start playing!
           </p>
         </div>
+        <img src={battleship} alt="battleship" className="home-image" />
       </div>
       <div className="home-buttons">
         <button
