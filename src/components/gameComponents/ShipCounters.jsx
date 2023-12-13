@@ -1,6 +1,6 @@
 import React from "react";
 
-function ShipCounters({ remainingShips, isPlayer }) {
+export default function ShipCounters({ remainingShips, isPlayer }) {
   return (
     <div className="ship-counter">
       <p className="text">{isPlayer ? "Remaining Player Ships:" : "Remaining Computer Ships:"}</p>
@@ -13,5 +13,3 @@ function ShipCounters({ remainingShips, isPlayer }) {
     </div>
   );
 }
-
-export default ShipCounters;

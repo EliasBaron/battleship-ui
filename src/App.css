@@ -15,6 +15,10 @@ body {
   color: #f9f9f9;
 }
 
+.home-container {
+  margin-bottom: 1em;
+}
+
 .text {
   color: #f9f9f9;
   font-size: 1.1em;
@@ -58,6 +62,7 @@ body {
   padding: .5em;
   font-size: 1em;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .orientation-button:hover {
@@ -75,10 +80,13 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%; 
+}
+
+.margin-bottom {
   margin-bottom: 1em;
 }
 
-.ship-button {
+.button {
   background-color: #18BC9C;
   color: white;
   border: none;
@@ -88,26 +96,27 @@ body {
   font-size: 1em;
   width: 100%; 
   margin-right: 1em;
+  font-weight: bold;
 }
 
-.ship-button:hover {
+.button:hover {
   opacity: 0.7;
 }
 
-.ship-button:active {
+.button:active {
   opacity: 0.5;
 }
 
-.ship-button.selected {
+.button.selected {
   background-color: rgb(26, 164, 88);
 }
 
-.ship-button:disabled {
+.button:disabled {
   background-color: rgb(86, 85, 85);
   cursor: default;
 }
 
-.ship-button:disabled:hover {
+.button:disabled:hover {
   opacity: 1;
 }
 
@@ -197,33 +206,15 @@ button.cell.miss {
   flex-wrap: wrap;
 }
 
-.rematch-button{
-  background-color: #18BC9C;
-  color: white;
-  width: 20em;
-  align-self: center;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.rematch-button:hover {
-  opacity: 0.7;
-}
-
-.rematch-button:active {
-  opacity: 0.5;
-}
-
 .text {
   color: #f9f9f9;
   font-size: 1.3em;
   font-weight: bold;
+}
+
+.rules-container {
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {

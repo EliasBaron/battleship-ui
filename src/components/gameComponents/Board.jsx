@@ -1,6 +1,6 @@
 import React from "react";
 
-function Board({ board, hits, misses, isUserBoard, handleClick }) {
+export default function Board({ board, hits, misses, isUserBoard, handleClick }) {
   return (
     <>
       {board.map((row, i) => (
@@ -20,5 +20,3 @@ function Board({ board, hits, misses, isUserBoard, handleClick }) {
     </>
   );
 }
-
-export default Board;
